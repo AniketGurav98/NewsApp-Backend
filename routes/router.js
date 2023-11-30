@@ -3,6 +3,7 @@ const router = express.Router();
 // const contactController = require('../controller/contactController');
 const loginController = require('../controller/loginController')
 const articleController = require('../controller/articleController');
+const detailArticle = require('../controller/detail-article');
 
 
 const userImage = require('../controller/user-image')
@@ -19,6 +20,7 @@ router.post('/login', loginController.loginUser);
 router.post('/signup', loginController.registerUser);
 router.post('/addArticle', articleController.addArticle);
 router.get('/getArticles', articleController.getArticles);
+router.get('/detail/:id', detailArticle.detailArticleById);
 
 
 
