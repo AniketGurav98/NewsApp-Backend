@@ -16,6 +16,11 @@ const loginSchema = new mongoose.Schema({
     type : String,
     required : true,
   },
+  
+  isPrimary:{
+    type : Boolean
+  },
+
   otp: {
     type: String,
   },
