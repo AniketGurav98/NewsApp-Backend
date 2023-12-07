@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-// const contactController = require('../controller/contactController');
+const contactController = require('../controller/contactController');
 const loginController = require('../controller/loginController')
 const articleController = require('../controller/articleController');
 const detailArticle = require('../controller/detail-article');
@@ -11,7 +11,7 @@ const userImage = require('../controller/user-image')
 // const userController = require('../controller/userController')
 
 // Define the route for form submission
-// router.post('/contact', contactController.submitForm);
+router.post('/contact', contactController.submitForm);
 
 router.post('/login', loginController.loginUser);
 
@@ -24,7 +24,7 @@ router.get('/detail/:id', detailArticle.detailArticleById);
 
 
 
-// router.get('/allContact', contactController.getData);
+router.get('/allContact', contactController.getData);
 
 // router.get('/getDataMonth', contactController.getMonthlySubmissionCounts);
 
