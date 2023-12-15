@@ -17,14 +17,21 @@ router.post('/login', loginController.loginUser);
 
 router.post('/verifyOTP', loginController.verifyOTP);
 
+router.post('/getArticleByCategory', articleController.getArticleByCategory);
+
 router.post('/register', loginController.registerUser);
 router.post('/addArticle', articleController.addArticle);
 router.get('/getArticles', articleController.getArticles);
 router.get('/detail/:id', detailArticle.detailArticleById);
 
+router.put('/update/:id', articleController.updateArticle)
+
 
 
 router.get('/allContact', contactController.getData);
+
+router.delete('/articles/:id', articleController.deleteArticle);
+
 
 // router.get('/getDataMonth', contactController.getMonthlySubmissionCounts);
 

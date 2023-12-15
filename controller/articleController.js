@@ -1,22 +1,51 @@
 const Article = require('../model/article');
+const Weather = require('../model/weatherArticle');
+const newSportsArticle = require('../model/article');
+const newPoliticsArticle = require('../model/article');
 
 exports.addArticle = async (req, res) => {
   try {
-    const { article, headline ,img} = req.body;
+    const { article, headline ,img ,category} = req.body;
     
     // Access the uploaded file details
-    console.log(img,"ttttttttttt");
+    console.log(req.body,"ttttttttttt");
 
     
     // Create a new article with the image path and other details
     const newArticle = new Article({
       img,
       article,
-      headline
+      headline,
+      category
     });
 
     // Save the article to the database
     await newArticle.save();
+    if (category === 'Weather') {
+      const newWeatherArticle = new Weather({
+        img,
+        article,
+        headline,
+        category,
+      });
+      await newWeatherArticle.save();
+    // } else if (category === 'Sports') {
+    //   const newSportsArticle = new Sports({
+    //     img,
+    //     article,
+    //     headline,
+    //     category,
+    //   });
+    //   await newSportsArticle.save();
+    // } else if (category === 'Politics') {
+    //   const newPoliticsArticle = new Politics({
+    //     img,
+    //     article,
+    //     headline,
+    //     category,
+    //   });
+    //   await newPoliticsArticle.save();
+    }
 
     res.status(201).json({ message: 'Article created successfully' });
   } catch (error) {
@@ -62,9 +91,69 @@ exports.getArticles = async (req, res) => {
     const skip = (page - 1) * pageSize;
 
     // Query the database to get a subset of articles based on pagination parameters
-    const articles = await Article.find().skip(skip).limit(pageSize);
+    const articles = await Article.find().skip(skip).limit(pageSize).sort({ date: -1 }) // Sort by date in descending order
+    ;
 
     res.status(200).json(articles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.getArticleByCategory = async (req, res) => {
+  try {
+    const { myCategory } = req.body;
+    const page = req.query.page ? parseInt(req.query.page) : 1;
+
+    const pageSize = 8; // Number of articles to send per page
+
+    // Calculate the skip value based on the page number and page size
+    const skip = (page - 1) * pageSize;
+
+    console.log(myCategory, "00000");
+
+    const articles = await Article.find({ category: myCategory }).skip(skip).limit(pageSize);
+
+    res.status(200).json(articles.reverse());
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+exports.updateArticle = async (req, res) => {
+  const id = req.params.id;
+  const updatedArticle = req.body;
+
+  try {
+    // Update the article in the database using Mongoose
+    const result = await Article.findByIdAndUpdate(id, updatedArticle, { new: true });
+
+    if (!result) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+
+    res.json({ message: 'Article updated successfully', updatedArticle: result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.deleteArticle = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Delete the article in the database using Mongoose
+    const result = await Article.findByIdAndDelete(id);
+
+    if (!result) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+
+    res.json({ message: 'Article deleted successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

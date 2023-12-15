@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const articleSchema = new mongoose.Schema({
+const weatherarticleSchema = new mongoose.Schema({
   img: String,
   article: String,
   headline : String,
@@ -11,6 +11,6 @@ const articleSchema = new mongoose.Schema({
   },
 });
 
-const Article = mongoose.model('Article', articleSchema);
+const newWeatherArticle = mongoose.model('WeatherArticle', weatherarticleSchema);
 
-module.exports = Article;
+module.exports = newWeatherArticle;
