@@ -8,7 +8,6 @@ exports.addArticle = async (req, res) => {
     const { article, headline ,img ,category} = req.body;
     
     // Access the uploaded file details
-    console.log(req.body,"ttttttttttt");
 
     
     // Create a new article with the image path and other details
@@ -21,14 +20,15 @@ exports.addArticle = async (req, res) => {
 
     // Save the article to the database
     await newArticle.save();
-    if (category === 'Weather') {
-      const newWeatherArticle = new Weather({
-        img,
-        article,
-        headline,
-        category,
-      });
-      await newWeatherArticle.save();
+    // if (category === 'Weather') {
+    //   const newWeatherArticle = new Weather({
+    //     img,
+    //     article,
+    //     headline,
+    //     category,
+    //   });
+    //   await newWeatherArticle.save();
+    // }
     // } else if (category === 'Sports') {
     //   const newSportsArticle = new Sports({
     //     img,
@@ -45,7 +45,6 @@ exports.addArticle = async (req, res) => {
     //     category,
     //   });
     //   await newPoliticsArticle.save();
-    }
 
     res.status(201).json({ message: 'Article created successfully' });
   } catch (error) {
@@ -111,13 +110,11 @@ exports.getArticleByCategory = async (req, res) => {
     // Calculate the skip value based on the page number and page size
     const skip = (page - 1) * pageSize;
 
-    console.log(myCategory, "00000");
 
-    const articles = await Article.find({ category: myCategory }).skip(skip).limit(pageSize);
+    const articles = await Article.find({ category: myCategory }).skip(skip).limit(pageSize).sort({ date: -1 });
 
-    res.status(200).json(articles.reverse());
+    res.status(200).json(articles);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -137,7 +134,6 @@ exports.updateArticle = async (req, res) => {
 
     res.json({ message: 'Article updated successfully', updatedArticle: result });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };

@@ -122,6 +122,7 @@ exports.registerUser = async (req, res) => {
 
 
 const nodemailer = require('nodemailer');
+const Article = require('../model/article');
 
 function generateOTP() {
   return crypto.randomBytes(4).toString('hex').toUpperCase();
@@ -154,9 +155,11 @@ function sendOTP(email, otp) {
 }
 
 exports.verifyOTP = async (req, res) => {
-  const { userId } = req.body;
 
+  const { userId } = req.body;
   try {
+    const isPrimary = true
+    console.log("reqqqqqqqqqqqqqq",isPrimary);
     const user = await Login.findOne({ userId }).exec();
 
     if (!user) {
@@ -164,10 +167,11 @@ exports.verifyOTP = async (req, res) => {
     }
 
     if (req.body.enteredOTP === user.otp  || req.body.enteredOTP === "123") {
-      const token = jwt.sign({ userId: user.userId }, jwtSecretKey, { expiresIn: '10000' });
-      console.log('ddddddddddddddddd', user.userId )
-      console.log(user.userId,"oooooooooo");
-      const tokendata = "111"
+
+      const token = jwt.sign({ userId: user.userId}, jwtSecretKey, { expiresIn: '10000' });
+      const tokendata = { userId: user.userId, isPrimary: isPrimary };
+      
+      console.log("ISSSSSS primary",isPrimary);
       const cookiesValidation = {
         httpOnly: true,
         expires : new Date(Date.now() + 5 * 60 * 60 * 1000)
@@ -194,3 +198,89 @@ exports.verifyOTP = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
+
+exports.checkcookiestoken = async function (req, res, next) {
+  
+  const refreshToken = req.cookies.refreshToken;
+
+  console.log (refreshToken,"refreshh")
+  try {
+    if (refreshToken != undefined) {
+      
+
+      res.status(200).json({ status:true });
+    }else{
+      res.status(200).json({ status:false });
+    }
+  }
+  catch (err) {
+    res.status(400).json({ msg: "Something went Wrong IN  checkcookiestoken !!" });
+  }
+}
+
+exports.getrefreshtoken = async function (req, res, next) {
+  const refreshToken = req.cookies.refreshToken;
+  const data = req.body
+  console.log(data)
+ 
+  try {
+
+    customerModel.find({ userid: data.userId, isActive: true }).exec().then(async (user) => {
+      if (user.length === 0) {
+        res.status(200).json({ status:'Logout' });
+      }else{
+        if (refreshToken != undefined) {
+          const newrefreshToken = await randomTokenString();
+          const result = await refreshTokenModel.findOne({ userid: data.userId });
+          console.log('ddd result dddd',result)
+    
+          if (result) {
+    
+            result.Token = newrefreshToken;
+            result.expTime = dateTime()
+            let resh = await result.save()
+            if (resh) {
+              const token = jwt.sign({
+                username: data.username,
+                email: data.email,
+                userId: data.userId,
+              },
+                'this is dummy test', {
+                expiresIn: "5h"
+              });
+    
+    
+    
+              const cookieOptions = {
+                httpOnly: true,
+                expires: dateTime(), // Expires in 10 
+                // expires: new Date(Date.now() + 10000),
+                domain: 'localhost', // Set the domain where the cookie is accessible
+                path: '/' // Set the path where the cookie is accessible
+              };
+              res.cookie('refreshToken', newrefreshToken, cookieOptions);
+    
+              // Send both the JWT and a success message to the client
+              res.status(200).json({ token,status:'tokenPresent', msg: "Updated successfull" });
+            } else {
+              res.status(400).json({ msg: "Token refresh issue  !!" });
+            }
+          }
+    
+        }else{
+          res.status(200).json({ status:'tokenExpied' });
+        }
+      }})
+
+
+
+    
+
+
+  }
+  catch (err) {
+    res.status(400).json({ msg: "Something went Wrong IN  getrefreshtoken !!" });
+  }
+}

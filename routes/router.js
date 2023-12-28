@@ -24,6 +24,18 @@ router.post('/addArticle', articleController.addArticle);
 router.get('/getArticles', articleController.getArticles);
 router.get('/detail/:id', detailArticle.detailArticleById);
 
+router.get('/check-cookies-token', async function (req, res, next) {
+    loginController.checkcookiestoken(req, res)
+})
+
+router.get('/removeCookie', async function (req, res, next) {
+    loginController.removeCookie(req, res)
+})
+
+router.post('/get-refresh-token', async function (req, res, next) {
+    loginController.getrefreshtoken(req, res)
+})
+
 router.put('/update/:id', articleController.updateArticle)
 
 
