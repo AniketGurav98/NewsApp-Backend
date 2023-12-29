@@ -2,6 +2,50 @@ const Article = require('../model/article');
 const Weather = require('../model/weatherArticle');
 const newSportsArticle = require('../model/article');
 const newPoliticsArticle = require('../model/article');
+const webPush = require('web-push');
+
+const subscriptions = [];
+
+// Configure web push with your VAPID keys
+const vapidKeys = {
+  publicKey: 'BFsVH8U8RZuSbVbs-ZyN0O54QyZ289Puh--YVqDkGxOxyYl3YFwLCojNiac667mQRDLxQrjChFep_22XlVdPo8w',
+  privateKey: '9SsV-PVaIHzauUegARTfEZS4_aesLko9Szw6vhZ0ogM'
+};
+
+
+webPush.setVapidDetails(
+  'mailto: <aniketgurav2442@gmail.com>',
+  vapidKeys.publicKey,
+  vapidKeys.privateKey
+);
+
+ exports.subscribe = (req, res) => {
+  const subscription = req.body.subscription;
+  // Store the subscription
+  subscriptions.push(subscription);
+  console.log('Received subscription:', subscription);
+  res.status(200).send({ success: true });
+};
+
+// Handle sending notifications endpoint
+exports.sendNotification = (req, res) => {
+  const { subscription, payload } = req.body;
+
+  // Send notifications to all subscribers
+  Promise.all(
+    subscriptions.map((sub) =>
+      webPush.sendNotification(sub, JSON.stringify(payload))
+    )
+  )
+    .then(() => {
+      console.log('Notifications sent successfully');
+      res.status(200).send({ success: true });
+    })
+    .catch((error) => {
+      console.error('Error sending notifications:', error);
+      res.status(500).send({ success: false, error: 'Error sending notifications' });
+    });
+};
 
 exports.addArticle = async (req, res) => {
   try {
@@ -46,7 +90,10 @@ exports.addArticle = async (req, res) => {
     //   });
     //   await newPoliticsArticle.save();
 
-    res.status(201).json({ message: 'Article created successfully' });
+    const payload = { title: 'New Article Added', body: `Check out the latest article: ${headline}` };
+
+        res.status(201).json({ message: 'Article created successfully' });
+   
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
