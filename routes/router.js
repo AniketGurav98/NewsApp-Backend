@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-// const contactController = require('../controller/contactController');
+const contactController = require('../controller/contactController');
 const loginController = require('../controller/loginController')
 const articleController = require('../controller/articleController');
+const detailArticle = require('../controller/detail-article');
 
 
 const userImage = require('../controller/user-image')
@@ -10,19 +11,44 @@ const userImage = require('../controller/user-image')
 // const userController = require('../controller/userController')
 
 // Define the route for form submission
-// router.post('/contact', contactController.submitForm);
+router.post('/contact', contactController.submitForm);
 
 router.post('/login', loginController.loginUser);
 
-// router.post('/verifyOTP', loginController.verifyOTP);
+router.post('/verifyOTP', loginController.verifyOTP);
 
-router.post('/signup', loginController.registerUser);
+router.post('/getArticleByCategory', articleController.getArticleByCategory);
+
+router.post('/register', loginController.registerUser);
 router.post('/addArticle', articleController.addArticle);
+
+router.post('/subscribe', articleController.subscribe);
+
+router.post('/send-notification', articleController.sendNotification);
+
 router.get('/getArticles', articleController.getArticles);
+router.get('/detail/:id', detailArticle.detailArticleById);
+
+router.get('/check-cookies-token', async function (req, res, next) {
+    loginController.checkcookiestoken(req, res)
+})
+
+router.get('/removeCookie', async function (req, res, next) {
+    loginController.removeCookie(req, res)
+})
+
+router.post('/get-refresh-token', async function (req, res, next) {
+    loginController.getrefreshtoken(req, res)
+})
+
+router.put('/update/:id', articleController.updateArticle)
 
 
 
-// router.get('/allContact', contactController.getData);
+router.get('/allContact', contactController.getData);
+
+router.delete('/articles/:id', articleController.deleteArticle);
+
 
 // router.get('/getDataMonth', contactController.getMonthlySubmissionCounts);
 
