@@ -22,6 +22,14 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
+
+// const serviceAccount = require('../news-portal-backend/views/abvnewsapp-firebase-adminsdk-h98dv-ef2598d0e3.json');
+
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: 'https://console.firebase.google.com/project/abvnewsapp/database',
+// });
+
 app.use(cors(corsOptions));
 app.use(cookieParser());
 

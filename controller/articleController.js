@@ -49,56 +49,42 @@ exports.sendNotification = (req, res) => {
 
 exports.addArticle = async (req, res) => {
   try {
-    const { article, headline ,img ,category} = req.body;
-    
-    // Access the uploaded file details
+    const { article, headline, img, category } = req.body;
 
-    
     // Create a new article with the image path and other details
     const newArticle = new Article({
       img,
       article,
       headline,
-      category
+      category,
     });
 
     // Save the article to the database
     await newArticle.save();
-    // if (category === 'Weather') {
-    //   const newWeatherArticle = new Weather({
-    //     img,
-    //     article,
-    //     headline,
-    //     category,
-    //   });
-    //   await newWeatherArticle.save();
-    // }
-    // } else if (category === 'Sports') {
-    //   const newSportsArticle = new Sports({
-    //     img,
-    //     article,
-    //     headline,
-    //     category,
-    //   });
-    //   await newSportsArticle.save();
-    // } else if (category === 'Politics') {
-    //   const newPoliticsArticle = new Politics({
-    //     img,
-    //     article,
-    //     headline,
-    //     category,
-    //   });
-    //   await newPoliticsArticle.save();
 
-    const payload = { title: 'New Article Added', body: `Check out the latest article: ${headline}` };
+    // Get tokens of users who accepted notifications (assuming you have a mechanism to store and retrieve tokens)
+    const tokens = ['token1', 'token2', /* ... */];
 
-        res.status(201).json({ message: 'Article created successfully' });
-   
+    // Send notification to users
+    const message = {
+      data: {
+        title: 'New Article',
+        body: `Check out the latest article: ${headline}`,
+      },
+      tokens: tokens,
+    };
+
+    // Send notifications using FCM
+    const response = await admin.messaging().sendMulticast(message);
+    console.log('Successfully sent message to devices:', response.successCount);
+
+    res.status(201).json({ message: 'Article created successfully' });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
-}
+};
 
 // exports.getArticles = async (req, res) => {
 //   try {
@@ -202,3 +188,5 @@ exports.deleteArticle = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+

@@ -205,11 +205,9 @@ exports.checkcookiestoken = async function (req, res, next) {
   
   const refreshToken = req.cookies.refreshToken;
 
-  console.log (refreshToken,"refreshh")
+  // console.log (refreshToken,"refreshh")
   try {
     if (refreshToken != undefined) {
-      
-
       res.status(200).json({ status:true });
     }else{
       res.status(200).json({ status:false });
