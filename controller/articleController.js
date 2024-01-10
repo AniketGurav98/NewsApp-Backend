@@ -111,6 +111,15 @@ exports.addArticle = async (req, res) => {
 //   }
 // };
 
+const admin = require('firebase-admin');
+const serviceaccout = require('../helper/abvnewsapp-firebase-adminsdk-h98dv-f20e9a2c69.json')
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceaccout),
+databaseURL:'https://abvnewsapp.firebaseio.com'
+});
+
+const registrationToken = ''
 exports.getArticles = async (req, res) => {
   console.log(req.body,"uhuh");
 
