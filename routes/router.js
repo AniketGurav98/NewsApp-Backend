@@ -13,6 +13,9 @@ const userImage = require('../controller/user-image')
 // Define the route for form submission
 router.post('/contact', contactController.submitForm);
 
+router.get('/countOfUserForNF', contactController.countOfUserForNF);
+router.post('/RemovecountOfUserForNF', contactController.RemovecountOfUserForNF);
+
 router.post('/login', loginController.loginUser);
 
 router.post('/verifyOTP', loginController.verifyOTP);

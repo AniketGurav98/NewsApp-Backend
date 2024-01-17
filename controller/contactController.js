@@ -1,4 +1,46 @@
 const Contact = require('../model/contactModel');
+const Nf = require("../model/Notificationmodel")
+
+const crypto = require('crypto')
+
+
+exports.RemovecountOfUserForNF = (req,res)=>{
+  try{
+     console.log('-------------',req.body.token)
+     const result = Nf.findByIdAndDelete({token:req.body.token})
+     console.log('------------------',result)
+
+        if (!result) {
+      return res.status(404).json({ message: 'token not found' });
+    }
+
+    res.json({ status:true ,message: 'Article deleted successfully' });
+  }
+  catch(err){
+    console.error(err)
+res.status(500).json({error:err})
+  }
+}
+
+
+exports.countOfUserForNF = (req,res)=>{
+  try{
+    const Token = crypto.randomBytes(8).toString('hex').toUpperCase();
+
+    const notification = new Nf({
+      token:Token
+    });
+     notification.save().then(result => {
+      res.status(200).json({status:true , data:result})
+  }) .catch(error => {
+    console.error('Save failed:', error);
+});
+  }
+  catch(err){
+    console.error(err)
+res.status(500).json({error:err})
+  }
+}
 
 
 exports.submitForm = (req, res) => {
