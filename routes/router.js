@@ -5,6 +5,8 @@ const loginController = require('../controller/loginController')
 const articleController = require('../controller/articleController');
 const detailArticle = require('../controller/detail-article');
 
+const subscriptionController = require('../controller/subscription.controller');
+
 
 const userImage = require('../controller/user-image')
 
@@ -22,9 +24,12 @@ router.post('/getArticleByCategory', articleController.getArticleByCategory);
 router.post('/register', loginController.registerUser);
 router.post('/addArticle', articleController.addArticle);
 
-router.post('/subscribe', articleController.subscribe);
+router.post('/subscribe', subscriptionController.subscribe);
+router.post('/send-notification', subscriptionController.sendNotification);
 
-router.post('/send-notification', articleController.sendNotification);
+
+// router.post('/subscribe', articleController.subscribe);
+// router.post('/send-notification', articleController.sendNotification);
 
 router.get('/getArticles', articleController.getArticles);
 router.get('/detail/:id', detailArticle.detailArticleById);

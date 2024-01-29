@@ -13,39 +13,45 @@ const vapidKeys = {
 };
 
 
-webPush.setVapidDetails(
-  'mailto: <aniketgurav2442@gmail.com>',
-  vapidKeys.publicKey,
-  vapidKeys.privateKey
-);
+// webPush.setVapidDetails(
+//   'mailto: <aniketgurav2442@gmail.com>',
+//   vapidKeys.publicKey,
+//   vapidKeys.privateKey
+// );
 
- exports.subscribe = (req, res) => {
-  const subscription = req.body.subscription;
-  // Store the subscription
-  subscriptions.push(subscription);
-  console.log('Received subscription:', subscription);
-  res.status(200).send({ success: true });
-};
+//  exports.subscribe = (req, res) => {
+//   console.log("---------");
+//   const subscription = req.body.subscription;
+//   // Store the subscription
+//   subscriptions.push(subscription);
+//   console.log('Received subscription:', subscription);
+//   res.status(200).send({ success: true });
+// };
 
-// Handle sending notifications endpoint
-exports.sendNotification = (req, res) => {
-  const { subscription, payload } = req.body;
+// exports.sendNotification = (req, res) => {
 
-  // Send notifications to all subscribers
-  Promise.all(
-    subscriptions.map((sub) =>
-      webPush.sendNotification(sub, JSON.stringify(payload))
-    )
-  )
-    .then(() => {
-      console.log('Notifications sent successfully');
-      res.status(200).send({ success: true });
-    })
-    .catch((error) => {
-      console.error('Error sending notifications:', error);
-      res.status(500).send({ success: false, error: 'Error sending notifications' });
-    });
-};
+//   console.log(subscriptions,"[[[[[[[[[[[[[[[[");
+//   // const { subscription, payload } = req.body;
+
+//   const subscription = req.body.subscription
+//   const payload = req.body.payload
+
+
+//   // Send notifications to all subscribers
+//   Promise.all(
+//     subscriptions.map((sub) =>
+//       webPush.sendNotification(sub, JSON.stringify(payload))
+//     )
+//   )
+//     .then(() => {
+//       console.log('Notifications sent successfully');
+//       res.status(200).send({ success: true });
+//     })
+//     .catch((error) => {
+//       console.error('Error sending notifications:', error);
+//       res.status(500).send({ success: false, error: 'Error sending notifications' });
+//     });
+// };
 
 exports.addArticle = async (req, res) => {
   try {
@@ -63,19 +69,19 @@ exports.addArticle = async (req, res) => {
     await newArticle.save();
 
     // Get tokens of users who accepted notifications (assuming you have a mechanism to store and retrieve tokens)
-    const tokens = ['token1', 'token2', /* ... */];
+    // const tokens = ['token1', 'token2', /* ... */];
 
     // Send notification to users
-    const message = {
-      data: {
-        title: 'New Article',
-        body: `Check out the latest article: ${headline}`,
-      },
-      tokens: tokens,
-    };
+    // const message = {
+    //   data: {
+    //     title: 'New Article',
+    //     body: `Check out the latest article: ${headline}`,
+    //   },
+    //   tokens: tokens,
+    // };
 
     // Send notifications using FCM
-    const response = await admin.messaging().sendMulticast(message);
+    // const response = await admin.messaging().sendMulticast(message);
     console.log('Successfully sent message to devices:', response.successCount);
 
     res.status(201).json({ message: 'Article created successfully' });
@@ -111,17 +117,17 @@ exports.addArticle = async (req, res) => {
 //   }
 // };
 
-const admin = require('firebase-admin');
-const serviceaccout = require('../helper/abvnewsapp-firebase-adminsdk-h98dv-f20e9a2c69.json')
+// const admin = require('firebase-admin');
+// const serviceaccout = require('../helper/abvnewsapp-firebase-adminsdk-h98dv-f20e9a2c69.json')
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceaccout),
-databaseURL:'https://abvnewsapp.firebaseio.com'
-});
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceaccout),
+// databaseURL:'https://abvnewsapp.firebaseio.com'
+// });
 
 const registrationToken = ''
 exports.getArticles = async (req, res) => {
-  console.log(req.body,"uhuh");
+  // console.log(req.body,"uhuh");
 
   try {
     console.log(req.query); // Log the query object to check received parameters
